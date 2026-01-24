@@ -1,0 +1,9 @@
+replicaCount: 2
+
+image:
+  repository: <AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/devsecops-java-app
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 80

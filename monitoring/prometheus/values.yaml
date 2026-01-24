@@ -1,0 +1,13 @@
+alertmanager:
+  enabled: true
+
+server:
+  retention: "15d"
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+
+scrape_configs:
+  - job_name: kubernetes-pods
+    kubernetes_sd_configs:
+      - role: pod
