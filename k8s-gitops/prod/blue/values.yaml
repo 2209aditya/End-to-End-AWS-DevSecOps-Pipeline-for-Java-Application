@@ -1,0 +1,66 @@
+# Unique release naming (important)
+nameOverride: my-app
+fullnameOverride: my-app-blue
+
+replicaCount: 3
+
+image:
+  repository: myrepo/my-app
+  tag: "v1"              # BLUE version
+  pullPolicy: IfNotPresent
+
+labels:
+  app: my-app
+  version: blue
+
+service:
+  name: my-app-blue
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: myapp.example.com
+
+  # THIS controls traffic switching
+  activeService: my-app-blue
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+probes:
+  liveness:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readiness:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+env:
+  ENV: "blue"
+
+config:
+  APP_MODE: "blue"
+
+secret:
+  enabled: true
+  data:
+    DB_PASSWORD: "blue-db-password"
+
+networkPolicy:
+  enabled: true
