@@ -1,0 +1,62 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: my-prod-cluster
+  region: ap-south-1   # Mumbai region
+  version: "1.29"
+
+availabilityZones:
+  - ap-south-1a
+  - ap-south-1b
+
+iam:
+  withOIDC: true   # REQUIRED for IRSA (important in prod)
+
+vpc:
+  cidr: "10.0.0.0/16"
+  nat:
+    gateway: HighlyAvailable
+
+managedNodeGroups:
+  - name: general-workers
+    instanceType: t3.medium
+    desiredCapacity: 3
+    minSize: 2
+    maxSize: 6
+
+    volumeSize: 50
+    volumeType: gp3
+
+    labels:
+      role: general
+
+    ssh:
+      allow: false
+
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        cloudWatch: true
+        ebs: true
+        albIngress: true
+
+  - name: spot-workers
+    instanceTypes: ["t3.medium", "t3.large"]
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 5
+
+    spot: true
+
+    labels:
+      role: spot
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]   # enable all logs
