@@ -1,3 +1,40 @@
 apiVersion: v2
-name: java-app
+name: my-app
+description: Production-grade Helm chart for my-app microservice
+
+type: application
+
+# Chart version (Helm package version)
 version: 1.0.0
+
+# Application version (your app version)
+appVersion: "1.2.3"
+
+# Optional but recommended
+kubeVersion: ">=1.24.0-0"
+
+home: https://github.com/your-org/my-app
+sources:
+  - https://github.com/your-org/my-app
+
+maintainers:
+  - name: Aditya
+    email: aditya@example.com
+
+keywords:
+  - microservice
+  - backend
+  - devops
+  - kubernetes
+
+# Dependencies (VERY IMPORTANT in real projects)
+dependencies:
+  - name: redis
+    version: 17.3.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+
+  - name: mysql
+    version: 9.10.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: mysql.enabled
