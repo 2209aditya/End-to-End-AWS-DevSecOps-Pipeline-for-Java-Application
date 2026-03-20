@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "my-app.fullname" . }}
+  labels:
+    app: {{ include "my-app.name" . }}
+data:
+  # Key-value configs
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+
+  # File-based config (very common in prod)
+  application.yaml: |
+    server:
+      port: 8080
+    logging:
+      level: INFO
+    database:
+      host: {{ .Values.db.host }}
+      port: {{ .Values.db.port }}
