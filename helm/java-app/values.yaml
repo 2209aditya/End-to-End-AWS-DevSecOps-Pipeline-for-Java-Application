@@ -1,9 +1,17 @@
-replicaCount: 2
+replicaCount: 4
 
-image:
-  repository: <AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/devsecops-java-app
-  tag: latest
+ingress:
+  enabled: true
+  host: myapp.prod.com
 
-service:
-  type: ClusterIP
-  port: 80
+resources:
+  requests:
+    cpu: "300m"
+    memory: "256Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+autoscaling:
+  minReplicas: 4
+  maxReplicas: 20
