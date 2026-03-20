@@ -1,0 +1,66 @@
+# Unique release naming
+nameOverride: my-app
+fullnameOverride: my-app-green
+
+replicaCount: 3
+
+image:
+  repository: myrepo/my-app
+  tag: "v2"              # GREEN version (new release)
+  pullPolicy: IfNotPresent
+
+labels:
+  app: my-app
+  version: green
+
+service:
+  name: my-app-green
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: myapp.example.com
+
+  # TRAFFIC SWITCH CONTROL
+  activeService: my-app-green
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+probes:
+  liveness:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readiness:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+env:
+  ENV: "green"
+
+config:
+  APP_MODE: "green"
+
+secret:
+  enabled: true
+  data:
+    DB_PASSWORD: "green-db-password"
+
+networkPolicy:
+  enabled: true
