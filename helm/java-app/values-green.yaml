@@ -1,0 +1,19 @@
+nameOverride: my-app-green
+
+replicaCount: 3
+
+image:
+  repository: myrepo/my-app
+  tag: "v2"   # Green version (new release)
+
+service:
+  name: my-app-green
+  port: 80
+
+labels:
+  version: green
+
+ingress:
+  enabled: true
+  host: myapp.example.com
+  serviceName: my-app-green
