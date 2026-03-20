@@ -1,0 +1,49 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "my-app.fullname" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "my-app.name" . }}
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        # Allow traffic from same namespace
+        - podSelector: {}
+
+        # Allow traffic from ingress controller (nginx)
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+
+      ports:
+        - protocol: TCP
+          port: 80
+
+  egress:
+    - to:
+        # Allow DNS (VERY IMPORTANT)
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+
+      ports:
+        - protocol: UDP
+          port: 53
+
+    - to:
+        # Allow DB access
+        - podSelector:
+            matchLabels:
+              app: mysql
+
+      ports:
+        - protocol: TCP
+          port: 3306
+{{- end }}
