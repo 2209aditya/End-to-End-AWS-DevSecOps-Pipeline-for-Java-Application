@@ -1,0 +1,19 @@
+nameOverride: my-app-blue
+
+replicaCount: 3
+
+image:
+  repository: myrepo/my-app
+  tag: "v1"   # Blue version
+
+service:
+  name: my-app-blue
+  port: 80
+
+labels:
+  version: blue
+
+ingress:
+  enabled: true
+  host: myapp.example.com
+  serviceName: my-app-blue
